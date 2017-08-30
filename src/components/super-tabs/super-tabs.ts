@@ -1,6 +1,7 @@
-import {Component, ContentChildren, Input, QueryList, ViewChild} from '@angular/core';
-import {SuperTabComponent} from "../super-tab/super-tab";
-import {Header, Platform, Slides} from "ionic-angular";
+import { Component, ContentChildren, Input, QueryList, ViewChild, ElementRef } from '@angular/core';
+import { SuperTabComponent } from "../super-tab/super-tab";
+import { Header, Platform, Slides } from "ionic-angular";
+import * as $ from 'jquery'
 
 /*
   Generated class for the SuperTabs component.
@@ -12,12 +13,12 @@ import {Header, Platform, Slides} from "ionic-angular";
   selector: 'super-tabs',
   template: `
       <ion-header>
-          <ion-navbar color="dark">
+          <ion-navbar>
               <ion-title>{{pageTitle}}</ion-title>
           </ion-navbar>
-          <ion-toolbar color="dark">
-              <ion-segment color="light" [(ngModel)]="selectedTabIndex">
-                  <ion-segment-button *ngFor="let tab of tabs; let i = index" [value]="i" (ionSelect)="onTabSelect(i)" (click)="scrollIntoView($event)">
+          <ion-toolbar>
+              <ion-segment #segment [(ngModel)]="selectedTabIndex">
+                  <ion-segment-button *ngFor="let tab of tabs; let i = index" [value]="i" (ionSelect)="onTabSelect(i)">
                       <ion-icon *ngIf="tab.icon" [name]="tab.icon"></ion-icon>
                       {{tab.title}}
                   </ion-segment-button>
@@ -39,6 +40,7 @@ export class SuperTabsComponent {
   tabs: SuperTabComponent[] = [];
 
   @ViewChild(Slides) slides: Slides;
+  @ViewChild("segment") segment: ElementRef;
 
   @ViewChild(Header) header: Header;
   headerHeight: number = 0;
@@ -107,6 +109,7 @@ export class SuperTabsComponent {
    */
   onSlideDidChange() {
     this.shouldSlideEase = false;
+    this.scrollTabView();
   }
 
   /**
@@ -118,28 +121,17 @@ export class SuperTabsComponent {
       this.slides.slideTo(index);
     }
   }
-
-  scrollIntoView(event: any) {
-    console.log(event);
-    // event.target.scrollIntoView(true);
-    event.target.parentElement.scrollLeft = event.target.offsetLeft - 40;
-
-    // var pos = event.target.parentElement.scrollLeft;
-    // var posOrigin = event.target.parentElement.scrollLeft;
-    // var targetOffset = event.target.offsetLeft - 50;
-
-    // var id = setInterval(frame, 1);
-    // function frame() {
-    //   if (posOrigin == targetOffset ) {
-    //     clearInterval(id);
-    //   } else if(posOrigin > targetOffset) {
-    //       posOrigin--;
-    //       event.target.parentElement.scrollLeft = posOrigin;
-    //   } else {
-    //     posOrigin++;
-    //     event.target.parentElement.scrollLeft = posOrigin;
-    //   }
-    // }
+  
+  /**
+   * Animate scroll tab navigation
+   */
+  scrollTabView() {
+    let elem = this.segment.nativeElement.scrollLeft;
+    var posOriginal = this.segment.nativeElement.children[this.selectedTabIndex].offsetLeft - 40;
+    
+    $(this.segment.nativeElement).animate({
+      scrollLeft: posOriginal
+    }, elem > posOriginal ? (elem - posOriginal) * 6 : (posOriginal - elem) * 6);
   }
 
   ngAfterViewInit() {
@@ -169,6 +161,4 @@ export class SuperTabsComponent {
     this.headerHeight = this.header.getNativeElement().offsetHeight;
     this.slidesHeight = this.platform.height() - this.headerHeight;
   }
-
-
 }
