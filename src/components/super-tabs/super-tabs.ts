@@ -97,7 +97,7 @@ export class SuperTabsComponent {
    * Also, lets animate the "slide" element
    */
   onSlideWillChange() {
-    if (this.slides.getActiveIndex() <= this.tabs.length) {
+    if (this.slides.getActiveIndex() < this.tabs.length) {
       this.shouldSlideEase = true;
       this.selectedTabIndex = this.slides.getActiveIndex();
     }
