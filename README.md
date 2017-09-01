@@ -3,11 +3,11 @@ Swipeable tabs for Ionic 2.
 Work in progress, but essentially works.
 
 ```
-npm i --save ionic2-super-tabs
+npm i --save ionic2-super-tabs-fc
 ```
 
 ```
-import { SuperTabsModule } from 'ionic2-super-tabs';
+import { SuperTabsModule } from 'ionic2-super-tabs-fc';
 
 @NgModule({
     ...

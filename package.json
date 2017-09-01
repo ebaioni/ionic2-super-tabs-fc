@@ -1,6 +1,6 @@
 {
   "name": "ionic2-super-tabs-fc",
-  "version": "0.1.14",
+  "version": "0.1.18",
   "description": "",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -32,5 +32,10 @@
   },
   "dependencies": {
     "jquery": "^3.2.1"
+  },
+  "repository" : { 
+    "type" : "git", 
+    "url" : "https://github.com/nandofalcao/ionic2-super-tabs-fc.git"
   }
+
 }
