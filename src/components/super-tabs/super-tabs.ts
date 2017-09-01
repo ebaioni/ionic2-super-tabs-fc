@@ -40,7 +40,7 @@ export class SuperTabsComponent {
   tabs: SuperTabComponent[] = [];
 
   @ViewChild(Slides) slides: Slides;
-  @ViewChild("segment") segment: ElementRef;
+  @ViewChild('segment') segment: ElementRef;
 
   @ViewChild(Header) header: Header;
   headerHeight: number = 0;
@@ -49,13 +49,13 @@ export class SuperTabsComponent {
   _selectedTabIndex = 0;
   @Input()
   set selectedTabIndex(val: number) {
-    if (val >= this.tabs.length) {
-      return;
+    this._selectedTabIndex = val;  
+    
+    if (val < this.tabs.length) {
+      let slidePosition = val * this.slides.renderedWidth / this.tabs.length;
+      this.slidePosition = slidePosition <= this.maxSlidePosition ? slidePosition + 'px' : this.maxSlidePosition + 'px';
+      this.pageTitle = this.tabs[this.selectedTabIndex].title;
     }
-    this._selectedTabIndex = val;
-    let slidePosition = val * this.slides.renderedWidth / this.tabs.length;
-    this.slidePosition = slidePosition <= this.maxSlidePosition ? slidePosition + 'px' : this.maxSlidePosition + 'px';
-    this.pageTitle = this.tabs[this.selectedTabIndex].title;
   }
 
   get selectedTabIndex(): number {
