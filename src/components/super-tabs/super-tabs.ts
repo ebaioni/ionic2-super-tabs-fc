@@ -12,8 +12,8 @@ import * as $ from 'jquery'
 @Component({
   selector: 'super-tabs',
   template: `
-      <ion-header>
-          <ion-navbar>
+      <ion-header class="super-tabs">
+          <ion-navbar hideBackButton="true">
               <ion-title>{{pageTitle}}</ion-title>
           </ion-navbar>
           <ion-toolbar>
@@ -26,7 +26,7 @@ import * as $ from 'jquery'
               <div class="slide" #slide [style.left]="slidePosition" [class.ease]="shouldSlideEase" [style.width]="slideWidth"></div>
           </ion-toolbar>
       </ion-header>
-      <ion-slides [style.margin-top]="headerHeight + 'px'" [style.height]="slidesHeight + 'px'" (ionSlideDrag)="onDrag($event)" (ionSlideWillChange)="onSlideWillChange()" (ionSlideDidChange)="onSlideDidChange()" [initialSlide]="selectedTabIndex">
+      <ion-slides class="super-tabs" [style.margin-top]="headerHeight + 'px'" [style.height]="slidesHeight + 'px'" (ionSlideDrag)="onDrag($event)" (ionSlideWillChange)="onSlideWillChange()" (ionSlideDidChange)="onSlideDidChange()" [initialSlide]="selectedTabIndex">
           <ion-slide *ngFor="let tab of tabs">
               <ion-nav [root]="tab.tabRoot"></ion-nav>
           </ion-slide>
@@ -51,10 +51,12 @@ export class SuperTabsComponent {
   set selectedTabIndex(val: number) {
     this._selectedTabIndex = val;  
     
-    if (val < this.tabs.length) {
-      let slidePosition = val * this.slides.renderedWidth / this.tabs.length;
+    if (val > -1 && val < this.tabs.length) {
+      var slidePosition = val * this.slides.renderedWidth / this.tabs.length;
       this.slidePosition = slidePosition <= this.maxSlidePosition ? slidePosition + 'px' : this.maxSlidePosition + 'px';
       this.pageTitle = this.tabs[this.selectedTabIndex].title;
+      this.slides.slideTo(val);
+      this.scrollTabView();
     }
   }
 
