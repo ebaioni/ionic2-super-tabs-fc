@@ -1,6 +1,6 @@
 {
   "name": "ionic2-super-tabs-fc",
-  "version": "0.1.21",
+  "version": "0.1.23",
   "description": "",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",

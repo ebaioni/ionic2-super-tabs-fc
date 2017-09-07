@@ -15,6 +15,7 @@ import * as $ from 'jquery'
       <ion-header class="super-tabs">
           <ion-navbar hideBackButton="true">
               <ion-title>{{pageTitle}}</ion-title>
+              <ng-content></ng-content>
           </ion-navbar>
           <ion-toolbar>
               <ion-segment #segment [(ngModel)]="selectedTabIndex">
@@ -133,7 +134,7 @@ export class SuperTabsComponent {
     
     $(this.segment.nativeElement).animate({
       scrollLeft: posOriginal
-    }, elem > posOriginal ? (elem - posOriginal) * 6 : (posOriginal - elem) * 6);
+    }, elem > posOriginal ? (elem - posOriginal) * 4 : (posOriginal - elem) * 4);
   }
 
   ngAfterViewInit() {
