@@ -1,6 +1,6 @@
 import { Component, ContentChildren, Input, QueryList, ViewChild, ElementRef } from '@angular/core';
 import { SuperTabComponent } from "../super-tab/super-tab";
-import { Header, Platform, Slides } from "ionic-angular";
+import { Header, Platform, Slides, Events } from "ionic-angular";
 import * as $ from 'jquery'
 
 /*
@@ -35,6 +35,7 @@ import * as $ from 'jquery'
   `
 })
 export class SuperTabsComponent {
+  private timerScrollTab: any;
 
   @ContentChildren(SuperTabComponent) superTabs: QueryList<SuperTabComponent>;
 
@@ -47,6 +48,9 @@ export class SuperTabsComponent {
   headerHeight: number = 0;
   slidesHeight: number = 0;
 
+  @Input()
+  tabChanged: Function;
+
   _selectedTabIndex = 0;
   @Input()
   set selectedTabIndex(val: number) {
@@ -57,7 +61,11 @@ export class SuperTabsComponent {
       this.slidePosition = slidePosition <= this.maxSlidePosition ? slidePosition + 'px' : this.maxSlidePosition + 'px';
       this.pageTitle = this.tabs[this.selectedTabIndex].title;
       this.slides.slideTo(val);
-      this.scrollTabView();
+      let self = this;
+      clearTimeout(this.timerScrollTab);
+      this.timerScrollTab = setTimeout(function() {
+        self.scrollTabView();  
+      }, 500);
     }
   }
 
@@ -71,7 +79,7 @@ export class SuperTabsComponent {
   shouldSlideEase: boolean = false;
   pageTitle: string = '';
 
-  constructor(private platform: Platform) {
+  constructor(private platform: Platform, private events: Events) {
     console.log('Hello SuperTabs Component');
   }
 
@@ -103,6 +111,11 @@ export class SuperTabsComponent {
     if (this.slides.getActiveIndex() < this.tabs.length) {
       this.shouldSlideEase = true;
       this.selectedTabIndex = this.slides.getActiveIndex();
+      
+      this.events.publish('tabChanged', this.slides.getActiveIndex());
+
+      if(this.tabChanged)
+        this.tabChanged(this.slides.getActiveIndex());  
     }
   }
 
@@ -112,7 +125,12 @@ export class SuperTabsComponent {
    */
   onSlideDidChange() {
     this.shouldSlideEase = false;
-    this.scrollTabView();
+    let self = this;
+    clearTimeout(this.timerScrollTab);
+    this.timerScrollTab = setTimeout(function() {
+      self.scrollTabView();  
+    }, 500);
+    
   }
 
   /**
@@ -129,10 +147,10 @@ export class SuperTabsComponent {
    * Animate scroll tab navigation
    */
   scrollTabView() {
-    let elem = this.segment.nativeElement.scrollLeft;
-    var posOriginal = this.segment.nativeElement.children[this.selectedTabIndex].offsetLeft - 40;
-    
-    $(this.segment.nativeElement).animate({
+    let self = this;
+    let elem = self.segment.nativeElement.scrollLeft;
+    var posOriginal = self.segment.nativeElement.children[self.selectedTabIndex].offsetLeft - 40;
+    $(self.segment.nativeElement).animate({
       scrollLeft: posOriginal
     }, elem > posOriginal ? (elem - posOriginal) * 4 : (posOriginal - elem) * 4);
   }
